@@ -9,4 +9,7 @@ compile_test:
 run_test:
 	erl -o ${output} -run  
 
+run_shell:
+	erl -o ${output}
+
 all: compile_src compile_test

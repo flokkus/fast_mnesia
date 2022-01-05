@@ -42,8 +42,8 @@ delete(Key) ->
 %% Internal Functions
 
 dynamic_db_init([]) ->
-    mnesia:create_table(key_to_pid,
-                        [{index, [pid]},
+    mnesia:create_table(key_to_value,
+                        [{index, [key]},
                          {attributes, record_info(fields, key_to_value)}
                         ]);
 dynamic_db_init(CacheNodes) ->

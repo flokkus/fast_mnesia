@@ -31,13 +31,7 @@ lookup(Key) ->
     end.
 
 delete(Key) ->
-    case mnesia:dirty_index_read(key_to_value, Key, #key_to_value.key) of
-        [#key_to_value{} = Record] ->
-            mnesia:dirty_delete_object(Record);
-        _ ->
-            ok
-    end.
-
+    mnesia:dirty_delete(key_to_value, Key).
 
 %% Internal Functions
 

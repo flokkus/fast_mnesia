@@ -21,4 +21,8 @@ start_contact_nodes:
 	erl -sname contact1 -detached
 	erl -sname contact2 -detached
 
+remove_beams:
+	rm ${cache_output}/*.beam
+	rm ${rd_output}/*.beam
+
 all: compile_src compile_test

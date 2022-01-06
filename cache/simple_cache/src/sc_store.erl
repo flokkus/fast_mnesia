@@ -36,6 +36,7 @@ delete(Key) ->
 %% Internal Functions
 
 dynamic_db_init([]) ->
+    io:format("Creating table"),
     mnesia:create_table(key_to_value,
                         [{index, [value]},
                          {attributes, record_info(fields, key_to_value)}
@@ -44,6 +45,7 @@ dynamic_db_init(CacheNodes) ->
     add_extra_nodes(CacheNodes).
 
 add_extra_nodes([Node|T]) ->
+    io:format("Adding extra node: ~p~n", [Node]),
     case mnesia:change_config(extra_db_nodes, [Node]) of
         {ok, [Node]} ->
             mnesia:add_table_copy(key_to_value, node(), ram_copies),

@@ -7,6 +7,7 @@
 -define(WAIT_FOR_RESOURCES, 2500).
 
 start(_StartType, _StartArgs) ->
+    net_adm:ping('mynode@Eduardos-MacBook-Pro-2'),
     sc_store:init(),
     case sc_sup:start_link() of
         {ok, Pid} ->

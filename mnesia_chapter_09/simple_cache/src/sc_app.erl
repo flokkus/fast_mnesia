@@ -25,7 +25,7 @@ stop(_State) ->
     ok.
 
 ensure_contact() ->
-    DefaultNodes = ['contact1@Eduardos-MacBook-Pro-2', 'contact2@Eduardos-MacBook-Pro-2'],
+    DefaultNodes = ['contact1@tenda.ic.unicamp.br', 'contact2@tenda.ic.unicamp.br'],
     case get_env(simple_cache, contact_nodes, DefaultNodes) of
         [] ->
             {error, no_contact_nodes};

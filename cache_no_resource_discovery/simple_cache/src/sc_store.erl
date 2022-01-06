@@ -45,21 +45,16 @@ dynamic_db_init() ->
     end.
 
 db_init(Node) ->
-    [R] = io_lib:format('~s', [Node]),
+    R = list_to_atom(Node),
     io:format("Adding node: <~w>~n", [R]),
-    io:format("Hard-coded:  <~w>~n", ['mynode@Eduardos-MacBook-Pro-2']),
-    net_adm:ping('mynode@Eduardos-MacBook-Pro-2'),
-    io:format(R == 'mynode@Eduardos-MacBook-Pro-2'),
-%    N = 'mynode@Eduardos-MacBook-Pro-2',
-    N = io:format("~s", [Node]),
-    io:format("Mnesia node: <~p>~n", [N]).
-%    case mnesia:change_config(extra_db_nodes, [N]) of
-%        {ok, [N]} ->
-%            mnesia:add_table_copy(key_to_value, node(), ram_copies),
-%
-%            Tables = mnesia:system_info(tables),
-%            mnesia:wait_for_tables(Tables, ?WAIT_FOR_TABLES)
-%    end.
+    net_adm:ping(R),
+    case mnesia:change_config(extra_db_nodes, [R]) of
+        {ok, [R]} ->
+            mnesia:add_table_copy(key_to_value, node(), ram_copies),
+
+            Tables = mnesia:system_info(tables),
+            mnesia:wait_for_tables(Tables, ?WAIT_FOR_TABLES)
+    end.
 
 db_init() ->
     io:format("Creating table"),

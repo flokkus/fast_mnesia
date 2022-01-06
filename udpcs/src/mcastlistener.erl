@@ -1,18 +1,14 @@
 -module(mcastlistener).
 
--export([
-	 run/0
+-export([open/2,
+         run/0,
+	 stop/1,
+	 receiver/0
 ]).
 
 %server and client ports must match.
 -define(MPORT, 5555).
--define(MADDR, {225,0,0,251}).
-
-run() ->
-    Socket=open({225,0,0,251}, 5555),
-    Pid=spawn(?MODULE,listener,[]),
-    gen_udp:controlling_process(Socket,Pid),
-    {Socket,Pid}.
+-define(MADDR, {225,0,0,255}).
 
 open(Addr, Port) ->
     {ok,Socket} = gen_udp:open(Port,
@@ -26,17 +22,23 @@ open(Addr, Port) ->
 close(Socket) ->
      gen_udp:close(Socket).
 
+run() ->
+    Socket=open(?MADDR,?MPORT),
+    Pid=spawn(?MODULE,receiver,[]),
+    gen_udp:controlling_process(Socket,Pid),
+    {Socket,Pid}.
+
 stop({Socket,Pid}) ->
     close(Socket),
     Pid ! stop.
 
-listener() ->
+receiver() ->
     receive
 	{udp, _Socket, IP, InPort, Packet} ->
 	    io:format("~nFrom: ~p~nPort: ~p~nData: ~p~n",
 		      [IP,InPort,inet_dns:decode(Packet)]),
-	    listener();
+	    receiver();
 	stop -> true;
 	AnythingElse -> io:format("received: ~p~n", [AnythingElse]),
-			listener()
+			receiver()
     end.

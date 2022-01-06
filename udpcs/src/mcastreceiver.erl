@@ -17,7 +17,7 @@ close(S) ->
      gen_udp:close(S).
 
 start() ->
-    S=open({225,0,0,251}, 5555),
+    S=open({225,0,0,250}, 5555),
     Pid=spawn(?MODULE,receiver,[]),
     gen_udp:controlling_process(S,Pid),
     {S,Pid}.

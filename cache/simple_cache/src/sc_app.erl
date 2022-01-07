@@ -34,7 +34,9 @@ ensure_contact() ->
     end.
 
 ensure_contact(ContactNodes) ->
+    io:format("Adding node: "),
     Answering = [N || N <- ContactNodes, net_adm:ping(N) =:= pong],
+    io:format("ping completed"),
     case Answering of
         [] ->
             {error, no_contact_nodes_reachable};

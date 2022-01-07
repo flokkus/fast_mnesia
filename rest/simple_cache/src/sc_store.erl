@@ -16,8 +16,9 @@ init() ->
     mnesia:stop(),
     mnesia:delete_schema([node()]),
     mnesia:start(),
-    {ok, CacheNodes} = resource_discovery:fetch_resources(simple_cache),
-    dynamic_db_init(lists:delete(node(), CacheNodes)).
+    dynamic_db_init(),
+    application:start(tcp_interface),
+    application:start(http_interface).
 
 insert(Key, Value) ->
     mnesia:dirty_write(#key_to_value{key = Key, value = Value}).
@@ -33,26 +34,35 @@ lookup(Key) ->
 delete(Key) ->
     mnesia:dirty_delete(key_to_value, Key).
 
-%% Internal Functions
+dynamic_db_init() ->
+    Nodes = init:get_plain_arguments(),
+    case Nodes of
+        [] ->
+            db_init();
+        [Node] ->
+            io:fwrite("Received nodes."),
+            io:fwrite(Node),
+            io:fwrite("\n"),
+            db_init(Node)
+    end.
 
-dynamic_db_init([]) ->
+db_init(Node) ->
+    R = list_to_atom(Node),
+    io:format("Adding node: <~w>~n", [R]),
+    net_adm:ping(R),
+    case mnesia:change_config(extra_db_nodes, [R]) of
+        {ok, [R]} ->
+            mnesia:add_table_copy(key_to_value, node(), ram_copies),
+
+            Tables = mnesia:system_info(tables),
+            mnesia:wait_for_tables(Tables, ?WAIT_FOR_TABLES)
+    end.
+
+db_init() ->
     io:format("Creating table"),
     mnesia:create_table(key_to_value,
                         [{index, [value]},
                          {attributes, record_info(fields, key_to_value)}
-                        ]);
-dynamic_db_init(CacheNodes) ->
-    add_extra_nodes(CacheNodes).
+                        ]).
 
-add_extra_nodes([Node|T]) ->
-    io:format("Adding extra node: ~p~n", [Node]),
-    case mnesia:change_config(extra_db_nodes, [Node]) of
-        {ok, [Node]} ->
-            mnesia:add_table_copy(key_to_value, node(), ram_copies),
-
-            Tables = mnesia:system_info(tables),
-            mnesia:wait_for_tables(Tables, ?WAIT_FOR_TABLES);
-        _ ->
-            add_extra_nodes(T)
-    end.
 

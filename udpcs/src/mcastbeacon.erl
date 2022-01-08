@@ -9,8 +9,8 @@
 ]).
 
 -define(ITERATIONS, 20).
--define(MADDR, "225.0.0.255").
--define(MPORT, 5555).
+-define(MADDR, "225.0.0.0").
+-define(MPORT, 6666).
 -define(MSG,"pid: ").
 
 open(Addr, Port) ->
@@ -53,8 +53,9 @@ client(Host, Port, Request) ->
 % Iteration++; Iterattion < ITERATIONS
 % ITERATIONS-2 messages are sent
 loopclient(Socket, Host, Port, Request1, Iteration) when Iteration =< ?ITERATIONS ->
+    io:fwrite("~s~n",[Request1]),
     ok = gen_udp:send(Socket,Host,Port,Request1),
-     loopclient(Socket,Host, Port, Request1, Iteration + 1);
+    loopclient(Socket,Host, Port, Request1, Iteration + 1);
 % Iterations > ITERATIONS
 loopclient(Socket, Host, Port, Request1, Iteration) ->
      close(Socket),

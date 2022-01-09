@@ -7,8 +7,8 @@
 ]).
 
 %server and client ports must match.
--define(MPORT, 5555).
--define(MADDR, {225,0,0,255}).
+-define(MPORT, 6666).
+-define(MADDR, {225,0,0,0}).
 
 open(Addr, Port) ->
     {ok,Socket} = gen_udp:open(Port,

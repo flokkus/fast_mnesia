@@ -4,6 +4,7 @@
 	 close/1,
 	 stop/1,
 	 client/1,
+	 msend/0,
 	 client/3,
 	 run/0
 ]).
@@ -15,7 +16,8 @@
 
 open(Addr, Port) ->
     {ok,Socket} = gen_udp:open(Port,
-			       [{reuseaddr,true}, 
+			       [{reuseaddr,true},
+				{broadcast,true},
 				{ip,Addr}, 
 				{multicast_ttl,4}, 
 				{multicast_loop,false}, binary]),
@@ -43,13 +45,19 @@ client(Request) ->
     close(Socket),
     Value.
 
+msend() ->
+    Socket=open({192,168,1,101},6666),
+    ok = gen_udp:send(Socket,{192,168,1,101},6666,"banana"),
+    close(Socket).
+
+
 % for 
 % Iteration = 0;
 client(Host, Port, Request) ->
-     Socket=open(?MADDR,?MPORT),
+     Socket=open({225,0,0,0},6666),
      Iteration = 0,
-     Pid = self(),
-     loopclient(Socket, Host, Port, Request++pid_to_list(Pid), Iteration + 1).   
+     loopclient(Socket, Host, Port, Request, Iteration + 1).   
+
 % Iteration++; Iterattion < ITERATIONS
 % ITERATIONS-2 messages are sent
 loopclient(Socket, Host, Port, Request1, Iteration) when Iteration =< ?ITERATIONS ->

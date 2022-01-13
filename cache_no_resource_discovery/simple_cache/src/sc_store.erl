@@ -19,10 +19,12 @@ init() ->
     dynamic_db_init().
 
 insert(Key, Value) ->
-    mnesia:dirty_write(#key_to_value{key = Key, value = Value}).
+%    mnesia:dirty_write(#key_to_value{key = Key, value = Value}).
+    mnesia:write(#key_to_value{key = Key, value = Value}).
 
 lookup(Key) ->
-    case mnesia:dirty_read(key_to_value, Key) of
+%    case mnesia:dirty_read(key_to_value, Key) of
+    case mnesia:read(key_to_value, Key) of
         [{key_to_value, Key, Value}] ->
 	    {ok, Value};
         [] ->
@@ -30,7 +32,8 @@ lookup(Key) ->
     end.
 
 delete(Key) ->
-    mnesia:dirty_delete(key_to_value, Key).
+%    mnesia:dirty_delete(key_to_value, Key).
+    mnesia:delete(key_to_value, Key).
 
 dynamic_db_init() ->
     Nodes = init:get_plain_arguments(),

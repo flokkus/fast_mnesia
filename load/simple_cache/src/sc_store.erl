@@ -13,6 +13,8 @@
 -record(key_to_value, {key, value}).
 
 init() ->
+    register(),
+    start_receive(),
     mnesia:stop(),
     mnesia:delete_schema([node()]),
     mnesia:start(),
@@ -62,5 +64,12 @@ db_init() ->
                         [{index, [value]},
                          {attributes, record_info(fields, key_to_value)}
                         ]).
+
+register() ->
+    register(mynode, self()).
+
+start_receive() ->
+%    spawn(fun() -> sc_receive:start() end).
+    sc_receive:start().
 
 

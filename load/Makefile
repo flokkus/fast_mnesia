@@ -19,8 +19,8 @@ run_mynode2:
 		-extra mynode@Eduardos-MacBook-Pro-2 
 
 run_load:
-	erl -sname test -pa ./simple_cache/ebin -pa ./load_generator/ebin pa ../../ponos/ebin 
-		-boot ./simple_cache -config sys -s load_generator
+	erl -sname load -pa ./load_generator/ebin pa ../../ponos/ebin \
+		-config sys -s load_generator -extra mynode@Eduardos-MacBook-Pro-2 
 
 remove_beams:
 	rm ./simple_cache/ebin/*.beam

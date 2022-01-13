@@ -14,7 +14,6 @@
 
 init() ->
     register(),
-    start_receive(),
     mnesia:stop(),
     mnesia:delete_schema([node()]),
     mnesia:start(),
@@ -63,7 +62,8 @@ db_init() ->
     mnesia:create_table(key_to_value,
                         [{index, [value]},
                          {attributes, record_info(fields, key_to_value)}
-                        ]).
+                        ]),
+    start_receive().
 
 register() ->
     register(mynode, self()).

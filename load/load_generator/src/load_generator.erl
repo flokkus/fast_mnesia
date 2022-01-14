@@ -2,8 +2,6 @@
 
 -export([start/0]).
 
--define(KEY, 'key').
--define(VALUE, 'value').
 -define(NODE, 'node').
 
 start() ->
@@ -11,6 +9,7 @@ start() ->
 
 load() ->
     io:fwrite("Starting load generator...~n"),
+    value_gen:start(),
     connect_to_cluster(),
     application:start(ponos),
     Name = load_cache,
@@ -22,9 +21,10 @@ load() ->
     ponos:init_load_generators([Name]).
 
 insert() ->
-    io:fwrite("Sending ~s:~s ~n", [?KEY, ?VALUE]),
-    {mynode, 'mynode@Eduardos-MacBook-Pro-2'} ! {?KEY, ?VALUE},
-    {mynode, 'mynode2@Eduardos-MacBook-Pro-2'} ! {?KEY, ?VALUE}.
+    {K,V} = value_gen:get_value(),
+    io:fwrite("Sending ~s:~s ~n", [K, V]),
+    {mynode, 'mynode@Eduardos-MacBook-Pro-2'} ! {K, V},
+    {mynode, 'mynode2@Eduardos-MacBook-Pro-2'} ! {K, V}.
 
 connect_to_cluster() ->
     Nodes = init:get_plain_arguments(),

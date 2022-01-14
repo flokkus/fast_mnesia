@@ -17,7 +17,8 @@ init() ->
     mnesia:stop(),
     mnesia:delete_schema([node()]),
     mnesia:start(),
-    dynamic_db_init().
+    dynamic_db_init(),
+    start_receive().
 
 insert(Key, Value) ->
     mnesia:dirty_write(#key_to_value{key = Key, value = Value}).
@@ -62,8 +63,7 @@ db_init() ->
     mnesia:create_table(key_to_value,
                         [{index, [value]},
                          {attributes, record_info(fields, key_to_value)}
-                        ]),
-    start_receive().
+                        ]).
 
 register() ->
     register(mynode, self()).

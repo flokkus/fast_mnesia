@@ -23,7 +23,8 @@ load() ->
 
 insert() ->
     io:fwrite("Sending ~s:~s ~n", [?KEY, ?VALUE]),
-    {mynode, 'mynode@Eduardos-MacBook-Pro-2'} ! {?KEY, ?VALUE}.
+    {mynode, 'mynode@Eduardos-MacBook-Pro-2'} ! {?KEY, ?VALUE},
+    {mynode, 'mynode2@Eduardos-MacBook-Pro-2'} ! {?KEY, ?VALUE}.
 
 connect_to_cluster() ->
     Nodes = init:get_plain_arguments(),

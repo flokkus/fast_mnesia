@@ -13,7 +13,7 @@ run_mynode:
 
 run_mynode2:
 	erl -sname mynode2 -pa ./simple_cache/ebin -boot ./simple_cache -config sys \
-		-extra mynode@Eduardos-MacBook-Pro-2 mynode3@Eduardos-MacBook-Pro-2
+		-extra mynode@Eduardos-MacBook-Pro-2
 
 remove_beams:
 	rm ./simple_cache/ebin/*.beam

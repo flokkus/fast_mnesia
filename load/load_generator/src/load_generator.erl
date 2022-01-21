@@ -1,6 +1,6 @@
 -module(load_generator).
 
--export([start/0]).
+-export([start/0,connect_to_cluster/0]).
 
 -define(NODE, 'node').
 

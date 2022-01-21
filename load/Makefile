@@ -1,3 +1,5 @@
+HOSTNAME := $(shell hostname)
+
 compile_src:
 	erlc -o ./simple_cache/ebin ./simple_cache/src/*.erl
  
@@ -16,11 +18,11 @@ run_mynode:
 
 run_mynode2:
 	erl -sname mynode2 -pa ./simple_cache/ebin -boot ./simple_cache -config sys \
-		-extra mynode@Eduardos-MacBook-Pro-2 
+		-extra mynode@$(HOSTNAME) 
 
 run_load:
-	erl -sname load -pa ./load_generator/ebin pa ../../ponos/ebin \
-		-config sys -s load_generator -extra mynode@Eduardos-MacBook-Pro-2 
+	erl -sname load -pa ./load_generator/ebin -pa ../../ponos/ebin \
+		-config sys -s load_generator -extra mynode@$(HOSTNAME) 
 
 remove_beams:
 	rm ./simple_cache/ebin/*.beam
